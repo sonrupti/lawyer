@@ -1,1 +1,21 @@
 @import "tailwindcss";
+.goog-logo-link {
+  display: none !important;
+}
+
+.goog-te-gadget span {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  color: transparent !important;
+  font-size: 0;
+}
+
+.goog-te-combo {
+  background: #0f172a;
+  color: white;
+  border: 1px solid #06b6d4;
+  border-radius: 8px;
+  padding: 8px 12px;
+}

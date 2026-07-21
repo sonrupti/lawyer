@@ -29,7 +29,9 @@ export default function Home(){
         </h1>
 
       </section>
-
+    <section className="py-10 px-8">
+    <LawyerList />
+</section>
 
     </main>
 

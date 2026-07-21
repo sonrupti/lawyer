@@ -27,7 +27,6 @@ const states = [
   "Uttar Pradesh",
   "Uttarakhand",
   "West Bengal",
-
   "Andaman and Nicobar Islands",
   "Chandigarh",
   "Dadra and Nagar Haveli and Daman and Diu",
@@ -38,9 +37,7 @@ const states = [
   "Puducherry"
 ];
 
-
 const practiceAreas = [
-
   "Criminal Law",
   "Civil Law",
   "Corporate Law",
@@ -81,9 +78,7 @@ const practiceAreas = [
   "Motor Accident Claims",
   "Civil Litigation",
   "Criminal Litigation"
-
 ];
-
 
 const experience = [
   "0-3 Years",
@@ -92,13 +87,11 @@ const experience = [
   "15+ Years"
 ];
 
-
 const ratings = [
   "5 Star",
   "4+ Star",
   "3+ Star"
 ];
-
 
 const languages = [
   "English",
@@ -113,12 +106,10 @@ const languages = [
   "Punjabi"
 ];
 
-
-function FilterBox({title,items}){
-
+function FilterBox({ title, items }) {
   return (
-
-    <div className="
+    <div
+      className="
       bg-slate-950/70
       border
       border-cyan-500/20
@@ -126,116 +117,91 @@ function FilterBox({title,items}){
       p-4
       hover:border-cyan-400
       transition
-    ">
-
-      <h3 className="
+      "
+    >
+      <h3
+        className="
         text-cyan-400
         font-semibold
         mb-3
-      ">
+        "
+      >
         {title}
       </h3>
 
-
       <select
         className="
-          w-full
-          bg-slate-900
-          text-gray-300
-          border
-          border-cyan-500/30
-          rounded-lg
-          p-2
+        w-full
+        bg-slate-900
+        text-gray-300
+        border
+        border-cyan-500/30
+        rounded-lg
+        p-2
         "
       >
+        <option>Select {title}</option>
 
-        <option>
-          Select {title}
-        </option>
-
-
-        {
-          items.map(item=>(
-            <option key={item}>
-              {item}
-            </option>
-          ))
-        }
-
-
+        {items.map((item) => (
+          <option key={item}>
+            {item}
+          </option>
+        ))}
       </select>
-
-
     </div>
-
   );
-
 }
 
+export default function Sidebar() {
+  return (
+    <aside
+      className="
+      w-80
+      min-h-screen
+      bg-slate-900/80
+      backdrop-blur-xl
+      border-r
+      border-cyan-500/20
+      p-5
+      "
+    >
+      <h2
+        className="
+        text-xl
+        font-bold
+        text-cyan-400
+        mb-6
+        "
+      >
+        ⚔ ARENA FILTERS
+      </h2>
 
+      <div className="space-y-5">
+        <FilterBox
+          title="State"
+          items={states}
+        />
 
-export default function Sidebar(){
+        <FilterBox
+          title="Practice Area"
+          items={practiceAreas}
+        />
 
-return (
+        <FilterBox
+          title="Experience"
+          items={experience}
+        />
 
-<aside className="
-w-80
-min-h-screen
-bg-slate-900/80
-backdrop-blur-xl
-border-r
-border-cyan-500/20
-p-5
-">
+        <FilterBox
+          title="Rating"
+          items={ratings}
+        />
 
-<h2 className="
-text-xl
-font-bold
-text-cyan-400
-mb-6
-">
-⚔ ARENA FILTERS
-</h2>
-
-
-<div className="space-y-5">
-
-
-<FilterBox
-title="State"
-items={states}
-/>
-
-
-<FilterBox
-title="Practice Area"
-items={practiceAreas}
-/>
-
-
-<FilterBox
-title="Experience"
-items={experience}
-/>
-
-
-<FilterBox
-title="Rating"
-items={ratings}
-/>
-
-
-<FilterBox
-title="Language"
-items={languages}
-/>
-
-
-</div>
-
-
-</aside>
-
-)
-
+        <FilterBox
+          title="Language"
+          items={languages}
+        />
+      </div>
+    </aside>
+  );
 }
