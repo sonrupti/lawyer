@@ -1,10 +1,13 @@
+import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
-import Hero from "../components/Hero/Hero";
 import Sidebar from "../components/Sidebar/Sidebar";
 import LawyerList from "../components/LawyerCard/LawyerList";
 import Stats from "../components/Stats/Stats";
 
-export default function Home({ theme, toggleTheme }) {
+export default function Lawyers({ theme, toggleTheme }) {
+  const location = useLocation();
+  const filters = location.state?.filters || {};
+
   return (
     <main
       className={`min-h-screen ${
@@ -17,9 +20,8 @@ export default function Home({ theme, toggleTheme }) {
         <Sidebar theme={theme} />
 
         <div className="flex-1">
-          <Hero theme={theme} />
           <Stats theme={theme} />
-          <LawyerList theme={theme} />
+          <LawyerList filters={filters} theme={theme} />
         </div>
       </div>
     </main>

@@ -1,11 +1,7 @@
 import SearchBar from "../SearchBar/SearchBar";
 
-
-export default function Hero() {
-
-
+export default function Hero({ theme }) {
   return (
-
     <section
       className="
       min-h-screen
@@ -17,10 +13,6 @@ export default function Hero() {
       px-6
       "
     >
-
-
-      {/* Background Glow */}
-
       <div
         className="
         absolute
@@ -32,73 +24,22 @@ export default function Hero() {
         "
       />
 
-
-      <div
-        className="
-        relative
-        max-w-5xl
-        text-center
-        "
-      >
-
-
-        <p
-          className="
-          text-cyan-400
-          uppercase
-          tracking-[0.4em]
-          mb-6
-          "
-        >
+      <div className="relative max-w-5xl text-center">
+        <p className="text-cyan-400 uppercase tracking-[0.4em] mb-6">
           Welcome To The Arena
         </p>
 
-
-
-        <h1
-          className="
-          text-5xl
-          md:text-7xl
-          font-bold
-          text-white
-          "
-        >
-
+        <h1 className="text-5xl md:text-7xl font-bold text-white">
           Find Elite
-
-          <span
-            className="
-            text-cyan-400
-            "
-          >
-            {" "}Legal Warriors
-          </span>
-
+          <span className="text-cyan-400"> Legal Warriors</span>
         </h1>
 
-
-
-        <p
-          className="
-          mt-6
-          text-gray-400
-          text-lg
-          "
-        >
-          Connect with verified legal professionals
-          and solve your legal challenges.
+        <p className="mt-6 text-gray-400 text-lg">
+          Connect with verified legal professionals and solve your legal challenges.
         </p>
 
-
-
-        <SearchBar />
-
-
+        <SearchBar theme={theme} />
       </div>
-
-
     </section>
-
   );
-
 }

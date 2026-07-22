@@ -1,41 +1,40 @@
+import { useEffect, useState } from "react";
 import {
   BrowserRouter,
   Routes,
   Route
 } from "react-router-dom";
 
-
 import Home from "./pages/Home";
+import Lawyers from "./pages/Lawyers";
 import LawyerProfile from "./pages/LawyerProfile";
 
+function App() {
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === "undefined") return "dark";
+    return window.localStorage.getItem("lexarena-theme") || "dark";
+  });
 
-function App(){
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("lexarena-theme", theme);
+    }
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
 
-return (
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
-<BrowserRouter>
-
-<Routes>
-
-<Route
-path="/"
-element={<Home />}
-/>
-
-
-<Route
-path="/lawyer/:id"
-element={<LawyerProfile />}
-/>
-
-
-</Routes>
-
-</BrowserRouter>
-
-)
-
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} />} />
+        <Route path="/lawyers" element={<Lawyers theme={theme} toggleTheme={toggleTheme} />} />
+        <Route path="/lawyer/:id" element={<LawyerProfile theme={theme} toggleTheme={toggleTheme} />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
 
 export default App;
