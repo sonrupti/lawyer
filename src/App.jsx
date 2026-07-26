@@ -12,6 +12,7 @@ import LawyerProfile from "./pages/LawyerProfile";
 import LawsHome from "./pages/Laws/LawsHome";
 import LawPage from "./pages/Laws/LawPage";
 import SectionPage from "./pages/Laws/SectionPage";
+import AiAssistant from "./pages/AiAssistant";
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -48,6 +49,7 @@ function App() {
   element={<SectionPage theme={theme} toggleTheme={toggleTheme} />}
 />
         <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} />} />
+        <Route path="/ai/chat" element={<AiAssistant />} />
         <Route path="/lawyers" element={<Lawyers theme={theme} toggleTheme={toggleTheme} />} />
         <Route path="/lawyer/:id" element={<LawyerProfile theme={theme} toggleTheme={toggleTheme} />} />
       </Routes>
