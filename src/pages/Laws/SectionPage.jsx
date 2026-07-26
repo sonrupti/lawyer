@@ -1,39 +1,85 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { bns } from "../../data/acts/bns";
+import { supabase } from "../../../lib/supabase";
 
 export default function SectionPage() {
   const { act, section } = useParams();
 
-  let law;
+  const [sectionData, setSectionData] = useState(null);
+  const [prevSection, setPrevSection] = useState(null);
+  const [nextSection, setNextSection] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (act.toLowerCase() === "bns") {
-    law = bns;
-  }
+  useEffect(() => {
+    async function loadSection() {
+      setLoading(true);
+      setError(null);
 
-  if (!law) {
+      // Fetch the current section
+      const { data, error: fetchError } = await supabase
+        .from("law_sections")
+        .select("*")
+        .eq("act", act.toUpperCase())
+        .eq("section_number", section)
+        .single();
+
+      if (fetchError) {
+        setError(fetchError.message);
+        setLoading(false);
+        return;
+      }
+
+      setSectionData(data);
+
+      // Fetch previous section (the one with the largest section_number less than current)
+      const { data: prevData } = await supabase
+        .from("law_sections")
+        .select("section_number")
+        .eq("act", act.toUpperCase())
+        .lt("section_number", data.section_number)
+        .order("section_number", { ascending: false })
+        .limit(1)
+        .single();
+
+      setPrevSection(prevData);
+
+      // Fetch next section (the one with the smallest section_number greater than current)
+      const { data: nextData } = await supabase
+        .from("law_sections")
+        .select("section_number")
+        .eq("act", act.toUpperCase())
+        .gt("section_number", data.section_number)
+        .order("section_number", { ascending: true })
+        .limit(1)
+        .single();
+
+      setNextSection(nextData);
+
+      setLoading(false);
+    }
+
+    loadSection();
+  }, [act, section]);
+
+  if (loading) {
     return (
       <div style={{ padding: "40px" }}>
-        <h1>Law not found</h1>
+        Loading...
       </div>
     );
   }
 
-  const currentIndex = law.sections.findIndex(
-    (item) => item.section_no === section
-  );
-
-  const sectionData = law.sections[currentIndex];
-
-  if (!sectionData) {
+  if (error || !sectionData) {
     return (
       <div style={{ padding: "40px" }}>
-        <h1>Section not found</h1>
+        <h1>{error ? "Error" : "Section not found"}</h1>
+        {error && (
+          <p style={{ color: "#ef4444" }}>{error}</p>
+        )}
       </div>
     );
   }
-
-  const previousSection = law.sections[currentIndex - 1];
-  const nextSection = law.sections[currentIndex + 1];
 
   return (
     <div
@@ -57,8 +103,31 @@ export default function SectionPage() {
 
 
       <h1 style={{ marginTop: "20px" }}>
-        {law.name}
+        {act.toUpperCase()}
       </h1>
+
+
+      {/* Chapter info */}
+      {(sectionData.chapter_number || sectionData.chapter_title) && (
+        <div
+          style={{
+            marginTop: "15px",
+            padding: "12px 18px",
+            borderRadius: "10px",
+            background: "rgba(37, 99, 235, 0.1)",
+            color: "#2563eb",
+            fontWeight: "600"
+          }}
+        >
+          {sectionData.chapter_number && (
+            <span>Chapter {sectionData.chapter_number}</span>
+          )}
+          {sectionData.chapter_number && sectionData.chapter_title && " — "}
+          {sectionData.chapter_title && (
+            <span>{sectionData.chapter_title}</span>
+          )}
+        </div>
+      )}
 
 
       {/* Section Header Card */}
@@ -71,11 +140,11 @@ export default function SectionPage() {
         }}
       >
         <h2>
-          Section {sectionData.section_no}
+          Section {sectionData.section_number}
         </h2>
 
         <h3>
-          {sectionData.title}
+          {sectionData.section_title}
         </h3>
       </div>
 
@@ -94,14 +163,14 @@ export default function SectionPage() {
           Legal Text
         </h2>
 
-        <p>
-          {sectionData.content ||
+        <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.8" }}>
+          {sectionData.body ||
             "Legal text will be added here."}
         </p>
       </div>
 
 
-      {/* Explanation Card */}
+      {/* Explanations Card */}
       <div
         style={{
           marginTop: "20px",
@@ -111,14 +180,35 @@ export default function SectionPage() {
         }}
       >
         <h2>
-          Simple Explanation
+          Explanations
         </h2>
 
-        <p>
-          {sectionData.explanation ||
-            "Explanation will be added here."}
+        <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.8" }}>
+          {sectionData.explanations ||
+            "No explanations available."}
         </p>
       </div>
+
+
+      {/* Illustrations Card */}
+      {sectionData.illustrations && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "25px",
+            borderRadius: "14px",
+            border: "1px solid #777"
+          }}
+        >
+          <h2>
+            Illustrations
+          </h2>
+
+          <p style={{ whiteSpace: "pre-wrap", lineHeight: "1.8" }}>
+            {sectionData.illustrations}
+          </p>
+        </div>
+      )}
 
 
       {/* Previous / Next Navigation */}
@@ -131,9 +221,9 @@ export default function SectionPage() {
         }}
       >
 
-        {previousSection ? (
+        {prevSection ? (
           <Link
-            to={`/laws/${act}/${previousSection.section_no}`}
+            to={`/laws/${act}/${prevSection.section_number}`}
             style={{
               padding: "12px 18px",
               borderRadius: "8px",
@@ -142,7 +232,7 @@ export default function SectionPage() {
               color: "inherit"
             }}
           >
-            ← Previous: Section {previousSection.section_no}
+            ← Previous: Section {prevSection.section_number}
           </Link>
         ) : (
           <div />
@@ -151,7 +241,7 @@ export default function SectionPage() {
 
         {nextSection ? (
           <Link
-            to={`/laws/${act}/${nextSection.section_no}`}
+            to={`/laws/${act}/${nextSection.section_number}`}
             style={{
               padding: "12px 18px",
               borderRadius: "8px",
@@ -160,7 +250,7 @@ export default function SectionPage() {
               color: "inherit"
             }}
           >
-            Next: Section {nextSection.section_no} →
+            Next: Section {nextSection.section_number} →
           </Link>
         ) : (
           <div />
